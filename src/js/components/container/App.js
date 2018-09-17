@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
 import firebase from 'firebase';
-import { DB_CONFIG } from './config.js';
-import Note from '../presentational/Note.js';
+import { DB_CONFIG } from '../../../config/config';
+import Note from '../presentational/Note.jsx';
 import NoteForm from '../presentational/NoteForm.js';
 import './App.css';
 
