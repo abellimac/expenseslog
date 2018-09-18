@@ -43,7 +43,6 @@ class App extends Component {
 				}
 			}
 		});
-
 	}
 
 	removeNote(noteId) {
@@ -68,7 +67,7 @@ class App extends Component {
 		return(
 			<div className="notesContainer">
 				<div className="notesHeader">
-					<h1>React y Firebase App</h1>
+					<h1>Registro de Gastos</h1>
 				</div>
 				<div className="notesBody">
 					<ul>
@@ -81,7 +80,6 @@ class App extends Component {
 										removeNote={this.removeNote}
 										key={note.noteId}
 									/>
-									// <li key={note.noteId}>{note.noteContent}</li>
 								)
 							})
 						}

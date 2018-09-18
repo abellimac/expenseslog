@@ -1,0 +1,41 @@
+.divTable{
+	display: table;
+    width: 100%;
+    background: #fff;
+    color: black;
+}
+.divTableRow {
+	display: table-row;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+}
+.divTableCell, .divTableHead {
+	/* border: 1px solid #999999;
+	display: table-cell;
+    padding: 3px 10px; */
+    border: 1px solid #00617f;
+    display: table-cell;
+    padding: 7px 10px;
+}
+.divTableHeading {
+	background-color: #EEE;
+	display: table-header-group;
+	font-weight: bold;
+}
+.divTableFoot {
+	background-color: #EEE;
+	display: table-footer-group;
+	font-weight: bold;
+}
+.divTableBody {
+	display: table-row-group;
+}
+
+.divTableCell.thead {
+	background: #019875;
+	color: #fff;
+	/* font-weight: bold; */
+	text-transform: uppercase;
+}
