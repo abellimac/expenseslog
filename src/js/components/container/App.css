@@ -22,3 +22,19 @@ body {
 	left: 0;
 	width: 100%;
 }
+
+.configuration h2 {
+	color: #000;
+}
+
+.configuration .configuration-body {
+	color: #000;
+}
+
+.btn-configuration {
+	background: transparent;
+	border: none;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}

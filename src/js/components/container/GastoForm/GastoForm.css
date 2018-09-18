@@ -60,7 +60,17 @@
     font-size: 20px;
 }
 
-.Number input[type="number"]{
+.Number input[type="number"] {
+    width: 100%;
+    border: 0;
+    padding-left: 17px;
+    font-size: 27px;
+    color: #00407f;
+    padding-bottom: 2px;
+    background: #ecf0f1;
+}
+
+.Text input[type="text"] {
     width: 100%;
     border: 0;
     padding-left: 17px;
