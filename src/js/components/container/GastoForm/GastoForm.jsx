@@ -13,11 +13,6 @@ class GastoForm extends Component {
     }
     
     addGasto() {
-        // console.log(this.selectInput.value);
-        // console.log(this.dateInput.value);
-        // console.log(this.numberInput.current.value);
-
-
         let gastos = {
             gasto_date: this.getToday(),
             gasto_tipo: this.selectInput.value,
@@ -68,15 +63,16 @@ class GastoForm extends Component {
                             <select
                                 ref={selectref => this.selectInput = selectref}
                             >
-                                <option value="Desayuno">Desayuno</option>
-                                <option value="Almuerzo">Almuerzo</option>
-                                <option value="Cena">Cena</option>
+                                {
+                                    this.props.tipogastos.map(tipogasto => {
+                                        return(
+                                            <option key={tipogasto.tipogastos_id} value={tipogasto.tipogastos_name}>{tipogasto.tipogastos_name}</option>
+                                        );
+                                    })
+                                }
                             </select>
                         </div>
                     </div>
-                    {/* <div className="col-sm-12 mb-2">
-
-                    </div> */}
                 </div>
                 <div className="Button">
                     <button
@@ -85,9 +81,6 @@ class GastoForm extends Component {
                         Guardar
                     </button>
                 </div>
-                {/* <Button
-                    addGasto={this.props.addGasto}
-                /> */}
             </div>
         )
     }

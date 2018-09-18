@@ -19,34 +19,23 @@ class App extends Component {
 		this.state = {
 			gastos:[],
 			open: true,
-			tipogastos: [
-				{
-					tipogastos_id: 1,
-					tipogastos_name: "Almuerzo1"
-				},
-				{
-					tipogastos_id: 2,
-					tipogastos_name: "desayouno1"
-				},
-			]
-			// notes: [
-				// {noteId: 1, noteContent: 'nota 1'},
-				// {noteId: 2, noteContent: 'nota 2'}
-			// ]
+			tipogastos: []
 		};
-		this.app = firebase.initializeApp(DB_CONFIG);
 		// this.db = this.app.database().ref().child('notes');
-		this.db = this.app.database().ref().child('gastos');
 		// this.addNote = this.addNote.bind(this);
 		// this.removeNote = this.removeNote.bind(this);
-
+		this.app = firebase.initializeApp(DB_CONFIG);
+		
 		this.addGasto = this.addGasto.bind(this);
 		this.removeGasto = this.removeGasto.bind(this);
 		this.onOpenModal = this.onOpenModal.bind(this);
 		this.onCloseModal = this.onCloseModal.bind(this);
 
-		this.db = this.app.database().ref().child('tipogastos');
+		this.db_gastos = this.app.database().ref().child('gastos');
+		this.db_tipogastos = this.app.database().ref().child('tipogastos');
+
 		this.addTipoGasto = this.addTipoGasto.bind(this);
+		this.removeTipoGasto = this.removeTipoGasto.bind(this);
 	}
 	
 	onOpenModal() {
@@ -58,10 +47,8 @@ class App extends Component {
 	};
 
 	componentDidMount() {
-		// const { notes } = this.state;
-		const { gastos } = this.state;
-		this.db.on("child_added", snap => {
-			// console.log(snap.val());
+		const { gastos, tipogastos } = this.state;
+		this.db_gastos.on("child_added", snap => {
 			gastos.push({
 				gasto_id: snap.key,
 				gasto_date: snap.val().gasto_date,
@@ -70,34 +57,33 @@ class App extends Component {
 			});
 			this.setState({ gastos });
 		});
-		// this.db.on('child_added', snap => {
-		// 	// console.log( snap.key );
-		// 	// console.log( snap.val().noteContent );
-		// 	notes.push({
-		// 		noteId: snap.key,
-		// 		noteContent: snap.val().noteContent
-		// 	});
-		// 	this.setState({ notes });
-		// });
-		this.db.on('child_removed', snap => {
-			// console.log(gastos);
+
+		this.db_gastos.on('child_removed', snap => {
 			for (let i = 0; i < gastos.length; i++) {
-				// console.log(gastos[i].gasto_id);
 				if (gastos[i].gasto_id == snap.key) {
 					gastos.splice(i, 1);
 				}
 			}
 			this.setState({ gastos });
 		});
-		// this.db.on('child_removed', snap => {
-		// 	for(let i = 0; i < notes.length; i++) {
-		// 		if (notes[i].noteId == snap.key) {
-		// 			notes.splice(i, 1);
-		// 			this.setState({ notes });
-		// 		}
-		// 	}
-		// });
 
+		// Tipo de datos
+		this.db_tipogastos.on("child_added", snap => {
+			tipogastos.push({
+				tipogastos_id: snap.key,
+				tipogastos_name: snap.val().tipogastos_name
+			});
+			this.setState({ tipogastos });
+		});
+
+		this.db_tipogastos.on("child_removed", snap => {
+			for(let i =0; i < tipogastos.length; i++) {
+				if (tipogastos[i].tipogastos_id == snap.key) {
+					tipogastos.splice(i, 1);
+				}
+			}
+			this.setState({ tipogastos });
+		});
 	}
 
 	// removeNote(noteId) {
@@ -109,9 +95,9 @@ class App extends Component {
 	// }
 
 	removeGasto(gasto_id) {
-		const response = window.confirm('Estas seguro de eliminar este gasto');
+		const response = window.confirm('¿Estás seguro de eliminar este gasto?');
 		if(response) {
-			this.db.child(gasto_id).remove();
+			this.db_gastos.child(gasto_id).remove();
 		}
 	}
 
@@ -126,7 +112,7 @@ class App extends Component {
 	// }
 
 	addGasto(gasto_tipo) {
-		this.db.push().set(
+		this.db_gastos.push().set(
 			{
 				gasto_tipo: gasto_tipo.gasto_tipo,
 				gasto_date: gasto_tipo.gasto_date,
@@ -136,9 +122,18 @@ class App extends Component {
 	}
 
 	addTipoGasto() {
-		this.db.push().set({
+		this.db_tipogastos.push().set({
 			tipogastos_name: this.inputTipoGasto.value
 		});
+		this.inputTipoGasto.value = '';
+		this.inputTipoGasto.focus();
+	}
+
+	removeTipoGasto(tipogastos_id) {
+		const response = window.confirm('¿Estás seguro de eliminar este Tipo de gasto?');
+		if (response) {
+			this.db_tipogastos.child(tipogastos_id).remove();
+		}
 	}
 
 	render() {
@@ -155,23 +150,31 @@ class App extends Component {
 						{/* <button onClick={this.onOpenModal}>Open modal</button> */}
 						<Modal open={open} onClose={this.onCloseModal} center>
 							<div className="configuration">
-								<h2>Simple centered modal</h2>
+								<h2></h2>
 								<div className="configuration-body">
 									<div className="tipogasto">
 										<table className="table">
 											<tbody>
 												{this.state.tipogastos.map(tipogasto => {
-													
 													return(
 														<tr key={tipogasto.tipogastos_id}>
-															<td>{tipogasto.tipogastos_name}</td>
+															<td>
+																{tipogasto.tipogastos_name}
+																<button
+																	onClick={() => this.removeTipoGasto(tipogasto.tipogastos_id)}
+																	type="button"
+																	className="btn btn-circle float-right"
+																>
+																	&times;
+																</button>
+															</td>
 														</tr>
 													)
 												})}
 											</tbody>
 										</table>
 
-										<div className="col-md-6 mb-2">
+										<div className="col-md-12 mb-2">
 											<div className="Text">
 												<input
 													ref={inputref => this.inputTipoGasto = inputref}
@@ -179,7 +182,7 @@ class App extends Component {
 												/>
 											</div>
 										</div>
-										<div className="col-md-6">
+										<div className="col-md-12">
 											<div className="Button">
 												<button
 													onClick={this.addTipoGasto}
@@ -202,29 +205,10 @@ class App extends Component {
 						/>
 					</div>
 				</div>
-				{/* <div className="notesBody">
-					<ul>
-						{
-							this.state.notes.map(note => {
-								return(
-									<Note
-										noteContent={note.noteContent}
-										noteId={note.noteId}
-										removeNote={this.removeNote}
-										key={note.noteId}
-									/>
-									// <li key={note.noteId}>{note.noteContent}</li>
-								)
-							})
-						}
-					</ul>
-				</div> */}
 				<div className="notesFooter">
-					{/* <NoteForm
-						addNote={this.addNote}
-					/> */}
 					<GastoForm
 						addGasto={this.addGasto}
+						tipogastos={this.state.tipogastos}
 					/>
 				</div>
 			</div>
