@@ -1,0 +1,71 @@
+/* Removes the clear button from date inputs */
+.Date input[type="date"] {
+    width: 100%;
+}
+
+.Date input[type="date"]::-webkit-clear-button {
+    display: none;
+}
+
+/* Removes the spin button */
+.Date input[type="date"]::-webkit-inner-spin-button {
+    display: none;
+}
+
+/* Always display the drop down caret */
+.Date input[type="date"]::-webkit-calendar-picker-indicator {
+    color: #2c3e50;
+}
+
+/* A few custom styles for date inputs */
+.Date input[type="date"] {
+    appearance: none;
+    -webkit-appearance: none;
+    color: #95a5a6;
+    font-family: "Helvetica", arial, sans-serif;
+    font-size: 18px;
+    border:1px solid #ecf0f1;
+    background:#ecf0f1;
+    padding:5px;
+    display: inline-block !important;
+    visibility: visible !important;
+}
+
+.Date input[type="date"], focus {
+    color: #95a5a6;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+}
+
+.Button button {
+	padding: 15px;
+	color: #fff;
+	background: #019875;
+	border: none;
+	width: 100%;
+}
+
+.Button button:hover {
+	background-color: #02bab5;
+}
+
+.Select select {
+    background: #ecf0f1;
+    border: none;
+    padding: 7px;
+    width: 100%;
+    color: #00417f;
+    padding-bottom: 7px;
+    font-size: 20px;
+}
+
+.Number input[type="number"]{
+    width: 100%;
+    border: 0;
+    padding-left: 17px;
+    font-size: 27px;
+    color: #00407f;
+    padding-bottom: 2px;
+    background: #ecf0f1;
+}

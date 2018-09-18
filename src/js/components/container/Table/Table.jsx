@@ -17,10 +17,11 @@ class Table extends Component {
                 </div>
                     {
                         this.props.gastos.map(gasto => {
+                            console.log(gasto);
                             return (
-                                <div key={gasto.noteId} className="divTableRow">
-                                    <div className="divTableCell">{gasto.noteId}</div>
-                                    <div className="divTableCell">{gasto.noteContent}</div>
+                                <div key={gasto.gasto_id} className="divTableRow">
+                                    <div className="divTableCell">{gasto.gasto_tipo}</div>
+                                    <div className="divTableCell">{gasto.gasto_monto}</div>
                                 </div>
                             )
                         })

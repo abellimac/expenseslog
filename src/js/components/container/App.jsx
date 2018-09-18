@@ -23,8 +23,9 @@ class App extends Component {
 		// this.db = this.app.database().ref().child('notes');
 		this.db = this.app.database().ref().child('gastos');
 		// this.addNote = this.addNote.bind(this);
-
 		// this.removeNote = this.removeNote.bind(this);
+
+		this.addGasto = this.addGasto.bind(this);
 	}
 
 	componentDidMount() {
@@ -33,9 +34,9 @@ class App extends Component {
 		this.db.on("child_added", snap => {
 			gastos.push({
 				gasto_id: snap.key,
-				gasto_date: snap.gasto_date,
-				gasto_monto: snap.gasto_monto,
-				gasto_tipo: sanp.gasto_typo
+				gasto_date: snap.val().gasto_date,
+				gasto_monto: snap.val().gasto_monto,
+				gasto_tipo: snap.val().gasto_tipo
 			});
 			this.setState({ gastos });
 		})
@@ -87,8 +88,13 @@ class App extends Component {
 	// }
 
 	addGasto(gasto_tipo) {
-		alert(gasto_tipo);
-		// this.db.push().set({gasto_tipo: gasto_tipo});
+		this.db.push().set(
+			{
+				gasto_tipo: gasto_tipo.gasto_tipo,
+				gasto_date: gasto_tipo.gasto_date,
+				gasto_monto: gasto_tipo.gasto_monto
+			}
+		);
 	}
 
 	render() {
@@ -97,7 +103,7 @@ class App extends Component {
 				<div className="notesHeader">
 					<h1>Registro de Gastos</h1>
 				</div>
-				<div className="container gastos-container notesBody">
+				<div className="gastos-container notesBody">
 					<div className="row">
 						<Table gastos={this.state.gastos}/>
 					</div>
