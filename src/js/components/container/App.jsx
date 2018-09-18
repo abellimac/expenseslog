@@ -7,6 +7,7 @@ import NoteForm from '../presentational/NoteForm';
 import './App.css';
 import Table from './Table/Table';
 import GastoForm from './GastoForm/GastoForm';
+import { constants } from 'os';
 
 
 class App extends Component {
@@ -26,6 +27,7 @@ class App extends Component {
 		// this.removeNote = this.removeNote.bind(this);
 
 		this.addGasto = this.addGasto.bind(this);
+		this.removeGasto = this.removeGasto.bind(this);
 	}
 
 	componentDidMount() {
@@ -39,7 +41,7 @@ class App extends Component {
 				gasto_tipo: snap.val().gasto_tipo
 			});
 			this.setState({ gastos });
-		})
+		});
 		// this.db.on('child_added', snap => {
 		// 	// console.log( snap.key );
 		// 	// console.log( snap.val().noteContent );
@@ -49,14 +51,15 @@ class App extends Component {
 		// 	});
 		// 	this.setState({ notes });
 		// });
-
 		this.db.on('child_removed', snap => {
+			// console.log(gastos);
 			for (let i = 0; i < gastos.length; i++) {
-				if (gastos[i].gastos_id == snap.key) {
+				// console.log(gastos[i].gasto_id);
+				if (gastos[i].gasto_id == snap.key) {
 					gastos.splice(i, 1);
-					this.setState({ gastos });
 				}
 			}
+			this.setState({ gastos });
 		});
 		// this.db.on('child_removed', snap => {
 		// 	for(let i = 0; i < notes.length; i++) {
@@ -69,12 +72,19 @@ class App extends Component {
 
 	}
 
-	removeNote(noteId) {
-		const response = window.confirm('Estas seguro de Eliminar');
-		if (response) {
-			this.db.child(noteId).remove();
+	// removeNote(noteId) {
+	// 	const response = window.confirm('Estas seguro de Eliminar');
+	// 	if (response) {
+	// 		this.db.child(noteId).remove();
+	// 	}
+	// 	return
+	// }
+
+	removeGasto(gasto_id) {
+		const response = window.confirm('Estas seguro de eliminar este gasto');
+		if(response) {
+			this.db.child(gasto_id).remove();
 		}
-		return
 	}
 
 	// addNote(gasto_tipo) {
@@ -105,7 +115,10 @@ class App extends Component {
 				</div>
 				<div className="gastos-container notesBody">
 					<div className="row">
-						<Table gastos={this.state.gastos}/>
+						<Table
+							gastos={this.state.gastos}
+							removeGasto={this.removeGasto}
+						/>
 					</div>
 				</div>
 				{/* <div className="notesBody">
