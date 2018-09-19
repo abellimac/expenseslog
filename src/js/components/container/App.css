@@ -38,3 +38,19 @@ body {
 	top: 10px;
 	right: 10px;
 }
+
+.information-section {
+	position: absolute;
+    top: 9px;
+    background: #0000004d;
+    padding: 8px;
+}
+
+hr.success {
+    border-top: 1px solid rgb(1, 152, 117);
+}
+
+.label-container label {
+	width: 100%;
+	border-bottom: 1px solid #019875;
+}

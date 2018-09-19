@@ -22,7 +22,9 @@ class App extends Component {
 			tipogastos: [],
 			month: (new Date().getMonth()),
 			today: this.getToday(new Date()),
-			totalGastado: 0
+			totalGastado: 0,
+			totalGastadoMensual: 0,
+			presupuesto_mensual: 0
 		};
 		// this.db = this.app.database().ref().child('notes');
 		// this.addNote = this.addNote.bind(this);
@@ -33,10 +35,11 @@ class App extends Component {
 		this.removeGasto = this.removeGasto.bind(this);
 		this.onOpenModal = this.onOpenModal.bind(this);
 		this.onCloseModal = this.onCloseModal.bind(this);
+		this.addPresupuesto = this.addPresupuesto.bind(this);
 
 		this.db_gastos = this.app.database().ref().child('gastos');
 		this.db_tipogastos = this.app.database().ref().child('tipogastos');
-
+		this.db_configuracion = this.app.database().ref().child('configuracion');
 		this.addTipoGasto = this.addTipoGasto.bind(this);
 		this.removeTipoGasto = this.removeTipoGasto.bind(this);
 		this.getToday = this.getToday.bind(this);
@@ -51,7 +54,7 @@ class App extends Component {
 	};
 
 	componentDidMount() {
-		const { gastos, tipogastos } = this.state;
+		const { gastos, tipogastos, presupuesto_mensual } = this.state;
 		this.db_gastos.on("child_added", snap => {
 			if(this.state.today == this.getToday(new Date(snap.val().gasto_date)))
 			{
@@ -65,7 +68,14 @@ class App extends Component {
 					totalGastado: (this.state.totalGastado + parseInt(snap.val().gasto_monto))
 				})
 			}
-			this.setState({ gastos });
+			let date_local = (this.getToday(new Date())).split('/');
+			let date_database = snap.val().gasto_date.split('/');
+			if(date_local[0] == date_database[0] && date_local[2] == date_database[2])
+			{
+				this.setState({
+					totalGastadoMensual: (this.state.totalGastadoMensual + parseInt(snap.val().gasto_monto))
+				})
+			}
 		});
 
 		this.db_gastos.on('child_removed', snap => {
@@ -75,6 +85,14 @@ class App extends Component {
 				}
 			}
 			this.setState({ gastos });
+		});
+
+		// Configuracion
+		this.db_configuracion.on('child_added', snap => {
+			this.setState({
+				presupuesto_mensual: snap.val()
+			})
+			// this.inputPresupuesto.value = this.state.presupuesto_mensual;
 		});
 
 		// Tipo de datos
@@ -146,6 +164,17 @@ class App extends Component {
 		}
 	}
 
+	addPresupuesto() {
+		this.db_configuracion.update({
+			presupuesto_mensual: this.inputPresupuesto.value
+		});
+		this.setState({
+			presupuesto_mensual: this.inputPresupuesto.value
+		});
+		// addPresupuesto
+		// this.inputPresupuesto.value = this.state.presupuesto_mensual;
+	}
+
 	getToday(date) {
         var today = date;
         var dd = today.getDate();
@@ -167,21 +196,48 @@ class App extends Component {
 	render() {
 		const { open } = this.state;
 		return(
-			
 			<div className="notesContainer">
 				<div className="notesHeader">
 					<h2>Registro de Gastos</h2>
-					<div className="text-justify">
-						Total Gastado {this.state.totalGastado}
-					</div>
+					{/* <div className="text-justify information-section">
+						<div>
+							Total Gastado {this.state.totalGastado}
+						</div>
+						<div>
+							Presupuesto 2000
+						</div>
+					</div> */}
 					<div>
 						<button className="btn-configuration" onClick={this.onOpenModal}>
-							<Image1 width={35} height={35}/>
+							<Image1 width={50} height={50}/>
 						</button>
 						<Modal open={open} onClose={this.onCloseModal} center>
 							<div className="configuration">
-								<h3>Lista de Gastos</h3>
+								<h3>Configuraciones</h3>
 								<div className="configuration-body">
+									{/* <div className="col-md-12 mb-2"> */}
+											<div className="Text Text text-left mb-2 label-container">
+												<label htmlFor="">Presupuesto Mensual</label>
+												<input
+													ref={inputpreref => this.inputPresupuesto = inputpreref}
+													defaultValue={(this.state.presupuesto_mensual)}
+													type="text"
+												/>
+											</div>
+									{/* </div> */}
+									{/* <div className="col-md-12"> */}
+											<div className="Button mb-3">
+												<button
+													onClick={this.addPresupuesto}
+												>
+													Guardar
+												</button>
+											</div>
+									{/* </div> */}
+									{/* <hr className="success"/> */}
+										<div className="text-left label-container">
+											<label htmlFor="">Lista de Gastos Mensuales</label>
+										</div>
 									<div className="tipogasto">
 										<table className="table">
 											<tbody>
@@ -229,6 +285,7 @@ class App extends Component {
 				</div>
 				<div className="gastos-container notesBody">
 					<div className="row">
+						<div>Total Gastado {this.state.totalGastado} | Presupuesto mensual {(this.state.presupuesto_mensual - this.state.totalGastadoMensual)}</div>
 						<Table
 							gastos={this.state.gastos}
 							removeGasto={this.removeGasto}
