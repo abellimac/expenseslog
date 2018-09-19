@@ -37,6 +37,7 @@ class Table extends Component {
                                         &times;
                                     </button>
                                 </div>
+                                {/* <div className="divTableCell">{gasto.gasto_date}</div> */}
                             </div>
                         )
                     })

@@ -18,8 +18,11 @@ class App extends Component {
 		super();
 		this.state = {
 			gastos:[],
-			open: true,
-			tipogastos: []
+			open: false,
+			tipogastos: [],
+			month: (new Date().getMonth()),
+			today: this.getToday(new Date()),
+			totalGastado: 0
 		};
 		// this.db = this.app.database().ref().child('notes');
 		// this.addNote = this.addNote.bind(this);
@@ -36,12 +39,13 @@ class App extends Component {
 
 		this.addTipoGasto = this.addTipoGasto.bind(this);
 		this.removeTipoGasto = this.removeTipoGasto.bind(this);
+		this.getToday = this.getToday.bind(this);
 	}
 	
 	onOpenModal() {
 		this.setState({ open: true });
 	  };
-	 
+
 	onCloseModal() {
 		this.setState({ open: false });
 	};
@@ -49,12 +53,18 @@ class App extends Component {
 	componentDidMount() {
 		const { gastos, tipogastos } = this.state;
 		this.db_gastos.on("child_added", snap => {
-			gastos.push({
-				gasto_id: snap.key,
-				gasto_date: snap.val().gasto_date,
-				gasto_monto: snap.val().gasto_monto,
-				gasto_tipo: snap.val().gasto_tipo
-			});
+			if(this.state.today == this.getToday(new Date(snap.val().gasto_date)))
+			{
+				gastos.push({
+					gasto_id: snap.key,
+					gasto_date: snap.val().gasto_date,
+					gasto_monto: parseInt(snap.val().gasto_monto),
+					gasto_tipo: snap.val().gasto_tipo
+				});
+				this.setState({
+					totalGastado: (this.state.totalGastado + parseInt(snap.val().gasto_monto))
+				})
+			}
 			this.setState({ gastos });
 		});
 
@@ -136,21 +146,41 @@ class App extends Component {
 		}
 	}
 
+	getToday(date) {
+        var today = date;
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        
+        if(dd<10) {
+            dd = '0'+dd
+        } 
+        
+        if(mm<10) {
+            mm = '0'+mm
+        } 
+        
+        today = mm + '/' + dd + '/' + yyyy;
+        return today;
+    }
+
 	render() {
 		const { open } = this.state;
 		return(
 			
 			<div className="notesContainer">
 				<div className="notesHeader">
-					<h1>Registro de Gastos</h1>
+					<h2>Registro de Gastos</h2>
+					<div className="text-justify">
+						Total Gastado {this.state.totalGastado}
+					</div>
 					<div>
 						<button className="btn-configuration" onClick={this.onOpenModal}>
 							<Image1 width={35} height={35}/>
 						</button>
-						{/* <button onClick={this.onOpenModal}>Open modal</button> */}
 						<Modal open={open} onClose={this.onCloseModal} center>
 							<div className="configuration">
-								<h2></h2>
+								<h3>Lista de Gastos</h3>
 								<div className="configuration-body">
 									<div className="tipogasto">
 										<table className="table">
@@ -209,6 +239,7 @@ class App extends Component {
 					<GastoForm
 						addGasto={this.addGasto}
 						tipogastos={this.state.tipogastos}
+						today={this.state.today}
 					/>
 				</div>
 			</div>

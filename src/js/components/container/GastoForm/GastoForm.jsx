@@ -9,34 +9,16 @@ class GastoForm extends Component {
         super();
         this.addGasto = this.addGasto.bind(this);
         this.numberInput = React.createRef();
-        this.getToday = this.getToday.bind(this);
     }
     
     addGasto() {
         let gastos = {
-            gasto_date: this.getToday(),
+            // gasto_date: this.getToday(),
+            gasto_date: this.props.today,
             gasto_tipo: this.selectInput.value,
             gasto_monto: this.numberInput.current.value
         }
         this.props.addGasto(gastos);
-    }
-
-    getToday() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        
-        if(dd<10) {
-            dd = '0'+dd
-        } 
-        
-        if(mm<10) {
-            mm = '0'+mm
-        } 
-        
-        today = mm + '/' + dd + '/' + yyyy;
-        return today;
     }
 
     render() {
