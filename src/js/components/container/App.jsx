@@ -79,11 +79,14 @@ class App extends Component {
 		});
 
 		this.db_gastos.on('child_removed', snap => {
+			// const toro = gastos;
+			// console.log(toro);
 			for (let i = 0; i < gastos.length; i++) {
 				if (gastos[i].gasto_id == snap.key) {
 					gastos.splice(i, 1);
 				}
 			}
+			// console.log(gastos);
 			this.setState({ gastos });
 		});
 
@@ -125,7 +128,15 @@ class App extends Component {
 	removeGasto(gasto_id) {
 		const response = window.confirm('¿Estás seguro de eliminar este gasto?');
 		if(response) {
+			// this.setState({
+			// 	gastos: this.state.gastos.filter((e, i) => {
+			// 		// console.log(e.gasto_id + '  =  '+ gasto_id);
+			// 		return e.gasto_id !== gasto_id
+			// 	})
+			// });
 			this.db_gastos.child(gasto_id).remove();
+			// console.log(this.state.tipogastos);
+			// console.log(gasto_id);
 		}
 	}
 
