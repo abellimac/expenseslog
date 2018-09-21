@@ -209,7 +209,7 @@ class App extends Component {
 		return(
 			<div className="notesContainer">
 				<div className="notesHeader">
-					<h2>Registro de Gastos</h2>
+					<h2>Gastometro</h2>
 					{/* <div className="text-justify information-section">
 						<div>
 							Total Gastado {this.state.totalGastado}
@@ -220,7 +220,7 @@ class App extends Component {
 					</div> */}
 					<div>
 						<button className="btn-configuration" onClick={this.onOpenModal}>
-							<Image1 width={50} height={50}/>
+							<Image1 width={42} height={42}/>
 						</button>
 						<Modal open={open} onClose={this.onCloseModal} center>
 							<div className="configuration">
@@ -294,9 +294,12 @@ class App extends Component {
 						</Modal>
 					</div>
 				</div>
+				<div className="info-section">
+					<div className="text-left">Total Gastado {this.state.totalGastado}</div>
+					<div className="text-left"> Presupuesto mensual {(this.state.presupuesto_mensual - this.state.totalGastadoMensual)}</div>
+				</div>
 				<div className="gastos-container notesBody">
 					<div className="row">
-						<div>Total Gastado {this.state.totalGastado} | Presupuesto mensual {(this.state.presupuesto_mensual - this.state.totalGastadoMensual)}</div>
 						<Table
 							gastos={this.state.gastos}
 							removeGasto={this.removeGasto}
