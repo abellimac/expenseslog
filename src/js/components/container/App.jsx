@@ -24,7 +24,8 @@ class App extends Component {
 			today: this.getToday(new Date()),
 			totalGastado: 0,
 			totalGastadoMensual: 0,
-			presupuesto_mensual: 0
+			presupuesto_mensual: 0,
+			openGastoForm: false
 		};
 		// this.db = this.app.database().ref().child('notes');
 		// this.addNote = this.addNote.bind(this);
@@ -36,6 +37,8 @@ class App extends Component {
 		this.onOpenModal = this.onOpenModal.bind(this);
 		this.onCloseModal = this.onCloseModal.bind(this);
 		this.addPresupuesto = this.addPresupuesto.bind(this);
+		this.openGastoFormModal = this.openGastoFormModal.bind(this);
+		this.closeGastoFormModal = this.closeGastoFormModal.bind(this);
 
 		this.db_gastos = this.app.database().ref().child('gastos');
 		this.db_tipogastos = this.app.database().ref().child('tipogastos');
@@ -44,7 +47,7 @@ class App extends Component {
 		this.removeTipoGasto = this.removeTipoGasto.bind(this);
 		this.getToday = this.getToday.bind(this);
 	}
-	
+
 	onOpenModal() {
 		this.setState({ open: true });
 	  };
@@ -52,6 +55,14 @@ class App extends Component {
 	onCloseModal() {
 		this.setState({ open: false });
 	};
+
+	openGastoFormModal() {
+		this.setState({ openGastoForm: true });
+	}
+
+	closeGastoFormModal() {
+		this.setState({ openGastoForm: false });
+	}
 
 	componentDidMount() {
 		const { gastos, tipogastos, presupuesto_mensual } = this.state;
@@ -222,6 +233,7 @@ class App extends Component {
 						<button className="btn-configuration" onClick={this.onOpenModal}>
 							<Image1 width={42} height={42}/>
 						</button>
+
 						<Modal open={open} onClose={this.onCloseModal} center>
 							<div className="configuration">
 								<h3>Configuraciones</h3>
@@ -306,13 +318,17 @@ class App extends Component {
 						/>
 					</div>
 				</div>
-				<div className="notesFooter">
+
+				<Modal open={this.state.openGastoForm} onClose={this.closeGastoFormModal}>
 					<GastoForm
-						addGasto={this.addGasto}
-						tipogastos={this.state.tipogastos}
-						today={this.state.today}
-					/>
-				</div>
+							addGasto={this.addGasto}
+							tipogastos={this.state.tipogastos}
+							today={this.state.today}
+						/>
+				</Modal>
+				<button className="buttonGastosForm" onClick={this.openGastoFormModal}>
+					<span>+</span>
+				</button>
 			</div>
 		);
 	}
