@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import './GastoForm.css';
-// import Date from '../../presentational/Date/Date';
-// import Select from '../../presentational/Select/Select';
-// import Button from '../../presentational/Button/Button';
 
 class GastoForm extends Component {
     constructor() {
@@ -13,7 +10,6 @@ class GastoForm extends Component {
     
     addGasto() {
         let gastos = {
-            // gasto_date: this.getToday(),
             gasto_date: this.props.today,
             gasto_tipo: this.selectInput.value,
             gasto_monto: this.numberInput.current.value
@@ -28,17 +24,10 @@ class GastoForm extends Component {
                     <div className="col-sm-6 mb-2">
                         <div className="Number">
                             <input
-                                // ref={numberref => this.numberInput = numberref}
                                 ref={this.numberInput}
                                 defaultValue={0}
                                 type="number"/>
                         </div>
-                        {/* <div className="Date">
-                            <input
-                                type="date"
-                                ref={dateref => this.dateInput = dateref}
-                            />
-                        </div> */}
                     </div>
                     <div className="col-sm-6 mb-2">
                         <div className="Select">

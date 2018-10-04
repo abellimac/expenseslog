@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import firebase from 'firebase';
 import { DB_CONFIG } from '../../../config/config';
 import Note from '../presentational/Note';
@@ -9,9 +8,7 @@ import Table from './Table/Table';
 import GastoForm from './GastoForm/GastoForm';
 import { constants } from 'os';
 import Modal from 'react-responsive-modal';
-// import logo from '../../../svg/configuration.svg';
 import Image1 from 'react-svg-loader!../../../svg/configuration.svg';
-
 
 class App extends Component {
 	constructor() {
@@ -27,9 +24,7 @@ class App extends Component {
 			presupuesto_mensual: 0,
 			openGastoForm: false
 		};
-		// this.db = this.app.database().ref().child('notes');
-		// this.addNote = this.addNote.bind(this);
-		// this.removeNote = this.removeNote.bind(this);
+
 		this.app = firebase.initializeApp(DB_CONFIG);
 		
 		this.addGasto = this.addGasto.bind(this);
@@ -90,15 +85,19 @@ class App extends Component {
 		});
 
 		this.db_gastos.on('child_removed', snap => {
-			// const toro = gastos;
-			// console.log(toro);
 			for (let i = 0; i < gastos.length; i++) {
 				if (gastos[i].gasto_id == snap.key) {
 					gastos.splice(i, 1);
 				}
 			}
-			// console.log(gastos);
-			this.setState({ gastos });
+
+			this.setState({
+				totalGastadoMensual: (this.state.totalGastadoMensual + parseInt(snap.val().gasto_monto))
+			})
+
+			this.setState({
+				totalGastado: (this.state.totalGastado - parseInt(snap.val().gasto_monto))
+			})
 		});
 
 		// Configuracion
@@ -106,7 +105,6 @@ class App extends Component {
 			this.setState({
 				presupuesto_mensual: snap.val()
 			})
-			// this.inputPresupuesto.value = this.state.presupuesto_mensual;
 		});
 
 		// Tipo de datos
@@ -128,38 +126,12 @@ class App extends Component {
 		});
 	}
 
-	// removeNote(noteId) {
-	// 	const response = window.confirm('Estas seguro de Eliminar');
-	// 	if (response) {
-	// 		this.db.child(noteId).remove();
-	// 	}
-	// 	return
-	// }
-
 	removeGasto(gasto_id) {
 		const response = window.confirm('¿Estás seguro de eliminar este gasto?');
 		if(response) {
-			// this.setState({
-			// 	gastos: this.state.gastos.filter((e, i) => {
-			// 		// console.log(e.gasto_id + '  =  '+ gasto_id);
-			// 		return e.gasto_id !== gasto_id
-			// 	})
-			// });
 			this.db_gastos.child(gasto_id).remove();
-			// console.log(this.state.tipogastos);
-			// console.log(gasto_id);
 		}
 	}
-
-	// addNote(gasto_tipo) {
-	// 	// let { notes } = this.state;
-	// 	// notes.push({
-	// 	// 	noteId: notes.length + 1,
-	// 	// 	noteContent: note
-	// 	// });
-	// 	// this.setState({ notes });
-	// 	this.db.push().set({gasto_tipo: gasto_tipo});
-	// }
 
 	addGasto(gasto_tipo) {
 		this.db_gastos.push().set(
@@ -169,6 +141,7 @@ class App extends Component {
 				gasto_monto: gasto_tipo.gasto_monto
 			}
 		);
+		this.setState({openGastoForm:false});
 	}
 
 	addTipoGasto() {
@@ -193,8 +166,6 @@ class App extends Component {
 		this.setState({
 			presupuesto_mensual: this.inputPresupuesto.value
 		});
-		// addPresupuesto
-		// this.inputPresupuesto.value = this.state.presupuesto_mensual;
 	}
 
 	getToday(date) {
@@ -221,14 +192,6 @@ class App extends Component {
 			<div className="notesContainer">
 				<div className="notesHeader">
 					<h2>Gastometro</h2>
-					{/* <div className="text-justify information-section">
-						<div>
-							Total Gastado {this.state.totalGastado}
-						</div>
-						<div>
-							Presupuesto 2000
-						</div>
-					</div> */}
 					<div>
 						<button className="btn-configuration" onClick={this.onOpenModal}>
 							<Image1 width={42} height={42}/>
@@ -238,29 +201,24 @@ class App extends Component {
 							<div className="configuration">
 								<h3>Configuraciones</h3>
 								<div className="configuration-body">
-									{/* <div className="col-md-12 mb-2"> */}
-											<div className="Text Text text-left mb-2 label-container">
-												<label htmlFor="">Presupuesto Mensual</label>
-												<input
-													ref={inputpreref => this.inputPresupuesto = inputpreref}
-													defaultValue={(this.state.presupuesto_mensual)}
-													type="text"
-												/>
-											</div>
-									{/* </div> */}
-									{/* <div className="col-md-12"> */}
-											<div className="Button mb-3">
-												<button
-													onClick={this.addPresupuesto}
-												>
-													Guardar
-												</button>
-											</div>
-									{/* </div> */}
-									{/* <hr className="success"/> */}
-										<div className="text-left label-container">
-											<label htmlFor="">Lista de Gastos Mensuales</label>
-										</div>
+									<div className="Text Text text-left mb-2 label-container">
+										<label htmlFor="">Presupuesto Mensual</label>
+										<input
+											ref={inputpreref => this.inputPresupuesto = inputpreref}
+											defaultValue={(this.state.presupuesto_mensual)}
+											type="text"
+										/>
+									</div>
+									<div className="Button mb-3">
+										<button
+											onClick={this.addPresupuesto}
+										>
+											Guardar
+										</button>
+									</div>
+									<div className="text-left label-container">
+										<label htmlFor="">Lista de Gastos Mensuales</label>
+									</div>
 									<div className="tipogasto">
 										<table className="table">
 											<tbody>
